@@ -1,33 +1,72 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model IEnumerable<_25DH110068_MyStore.Models.Product>
+@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
-
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+<div class="row" style="margin-top: 20px;">
+    <!-- Cột bên trái: Danh mục sản phẩm -->
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="@Url.Action("Index", "Home")" class="list-group-item active">
+                Tất cả danh mục
+            </a>
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var cat in (List<_25DH110068_MyStore.Models.Category>)ViewBag.Categories)
+                {
+                    <a href="@Url.Action("Index", "Home", new { categoryId = cat.CategoryID })" class="list-group-item">
+                        @cat.CategoryName
+                    </a>
+                }
+            }
+        </div>
     </div>
-</main>
+
+    <!-- Cột bên phải: Lưới danh sách sản phẩm -->
+    <div class="col-md-9">
+        <h3 style="margin-top: 0; margin-bottom: 20px;">Danh sách món ăn</h3>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning">
+                Chưa có sản phẩm nào thuộc danh mục này hoặc từ khóa tìm kiếm không khớp.
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-sm-6 col-md-4" style="margin-bottom: 25px;">
+                        <div class="thumbnail text-center" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            <!-- Ảnh sản phẩm -->
+                            <img src="@Url.Content("~/Images/" + item.ProductImage)" alt="@item.ProductName"
+                                 style="width: 100%; height: 180px; object-fit: cover; border-top-left-radius: 8px; border-top-right-radius: 8px;" />
+
+                            <div class="caption">
+                                <h4 style="font-weight: bold; margin-top: 10px; height: 38px; overflow: hidden;">
+                                    @item.ProductName
+                                </h4>
+                                <p style="color: #666; font-size: 13px; height: 36px; overflow: hidden;">
+                                    @item.ProductDecription
+                                </p>
+                                <p style="color: #d9534f; font-weight: bold; font-size: 17px;">
+                                    @(Convert.ToDecimal(item.ProductPrice).ToString("N0")) đ
+                                </p>
+                                <p>
+                                    <a href="@Url.Action("ProductDetail", "Home", new { id = item.ProductID })" class="btn btn-default" role="button">
+                                        Chi tiết
+                                    </a>
+                                    <a href="@Url.Action("AddToCart", "Cart", new { id = item.ProductID })" class="btn btn-primary" role="button">
+                                        <i class="glyphicon glyphicon-shopping-cart"></i> Thêm vào giỏ
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Đặt hàng thành công";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container text-center" style="margin-top: 60px;">
+    <div class="jumbotron" style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
+        <h1 style="color: #5cb85c;"><i class="glyphicon glyphicon-ok-circle"></i> Đặt hàng thành công!</h1>
+        <p style="margin-top: 20px;">
+            Cảm ơn bạn đã mua sắm tại <strong>MyStore</strong>. Mã đơn hàng của bạn là:
+            <span class="label label-primary" style="font-size: 20px;">#@ViewBag.OrderID</span>
+        </p>
+        <p style="margin-top: 30px;">
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg">Tiếp tục mua sắm</a>
+            <a href="@Url.Action("MyOrder", "Order")" class="btn btn-default btn-lg">Xem đơn hàng của tôi</a>
+        </p>
+    </div>
+</div>

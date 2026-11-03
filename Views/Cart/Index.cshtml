@@ -1,0 +1,93 @@
+﻿@model List<_25DH110068_MyStore.Models.CartItem>
+@{
+    ViewBag.Title = "Giỏ hàng của bạn";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container" style="margin-top: 20px;">
+    <h2>Giỏ hàng của bạn</h2>
+    <hr />
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            <p>Giỏ hàng hiện đang trống.</p>
+            <p style="margin-top: 10px;">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Tiếp tục mua hàng</a>
+            </p>
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr class="info">
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th style="width: 150px;">Số lượng</th>
+                    <th>Thành tiền</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="width: 100px; text-align: center;">
+                            <img src="@Url.Content("~/Images/" + item.Product.ProductImage)" width="70" height="70" style="object-fit: cover; border-radius: 4px;" />
+                        </td>
+                        <td style="vertical-align: middle; font-weight: bold;">
+                            @item.Product.ProductName
+                        </td>
+                        <td style="vertical-align: middle;">
+                            @(Convert.ToDecimal(item.Product.ProductPrice).ToString("N0") + " đ")
+                        </td>
+                        <td style="vertical-align: middle;">
+                            @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post, new { @class = "form-inline" }))
+                            {
+                                <input type="hidden" name="id" value="@item.Product.ProductID" />
+                                <div class="input-group">
+                                    <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control input-sm" style="width: 70px;" />
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-sm btn-info" title="Cập nhật"><i class="glyphicon glyphicon-refresh"></i></button>
+                                    </span>
+                                </div>
+                            }
+                        </td>
+                        <td style="vertical-align: middle; color: #d9534f; font-weight: bold;">
+                            @item.TotalPrice.ToString("N0") đ
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <a href="@Url.Action("RemoveFromCart", "Cart", new { id = item.Product.ProductID })" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa món này?');">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-right" style="font-weight: bold; font-size: 16px;">Tổng cộng:</td>
+                    <td colspan="2" style="font-weight: bold; font-size: 18px; color: #d9534f;">
+                        @(((decimal)ViewBag.TotalAmount).ToString("N0")) đ
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="row" style="margin-top: 15px;">
+            <div class="col-md-6">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-default">
+                    <i class="glyphicon glyphicon-arrow-left"></i> Tiếp tục mua hàng
+                </a>
+                <a href="@Url.Action("ClearCart", "Cart")" class="btn btn-warning" onclick="return confirm('Bạn có chắc muốn xóa hết giỏ hàng?');">
+                    Xóa toàn bộ giỏ hàng
+                </a>
+            </div>
+            <div class="col-md-6 text-right">
+                <a href="@Url.Action("Checkout", "Order")" class="btn btn-success btn-lg">
+                    Tiến hành đặt hàng <i class="glyphicon glyphicon-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    }
+</div>
